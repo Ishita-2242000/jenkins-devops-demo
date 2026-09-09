@@ -69,31 +69,19 @@ pipeline {
             }
         }
 
-        stage('Quality Checks') {
-            parallel {
+        stage('Trivy Security Scan') {
+            steps {
+              sh '''
+                echo "Running Trivy security scan..."
 
-                stage('Unit Test') {
-                    steps {
-                        echo 'Running unit tests...'
-                        sh 'echo "Unit tests passed"'
-                    }
-                }
-
-                stage('Security Scan') {
-                    steps {
-                        echo 'Running security scan...'
-                        sh 'echo "Security scan passed"'
-                    }
-                }
-
-                stage('Code Quality') {
-                    steps {
-                        echo 'Running code quality check...'
-                        sh 'echo "Code quality check passed"'
-                    }
-                }
+                trivy image \
+                    --severity HIGH,CRITICAL \
+                    --exit-code 1 \
+                    jenkins-devops-demo:latest
+                '''
             }
         }
+
 
         stage('Push Image to ECR') {
             steps {
@@ -111,19 +99,7 @@ pipeline {
                 '''
             }
         }
-        stage('Trivy Security Scan') {
-            steps {
-              sh '''
-                echo "Running Trivy security scan..."
-
-                trivy image \
-                    --severity HIGH,CRITICAL \
-                    --exit-code 1 \
-                    jenkins-devops-demo:latest
-                '''
-            }
-        }
-
+        
         stage('Deploy') {
             steps {
                 input message: 'Approve deployment to production?',
