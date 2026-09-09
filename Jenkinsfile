@@ -47,11 +47,20 @@ pipeline {
     }
 }
 
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-            }
+        stage('AWS Region') {
+             steps {
+                withCredentials([
+                  [$class: 'AmazonWebServicesCredentialsBinding',
+                   credentialsId: 'aws-devops-lab']
+        ]) 
+        {
+                sh '''
+                    aws configure get region || true
+                    aws sts get-caller-identity
+                '''
         }
+    }
+}
     }
 
     post {
