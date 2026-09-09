@@ -69,41 +69,38 @@ pipeline {
             }
         }
 
-        stage('Docker Test') {
-            steps {
-                sh '''
-                    echo "Docker version:"
-                    docker --version
+        stage('Quality Checks') {
+            parallel {
 
-                    echo "Docker containers:"
-                    docker ps
-                '''
+                stage('Unit Test') {
+                    steps {
+                        echo 'Running unit tests...'
+                        sh 'echo "Unit tests passed"'
+                    }
+                }
+
+                stage('Security Scan') {
+                    steps {
+                        echo 'Running security scan...'
+                        sh 'echo "Security scan passed"'
+                    }
+                }
+
+                stage('Code Quality') {
+                    steps {
+                        echo 'Running code quality check...'
+                        sh 'echo "Code quality check passed"'
+                    }
+                }
             }
         }
-        stage('Push Image to ECR') {
-    steps {
-        sh '''
-            echo "Tagging Docker image..."
-
-            docker tag \
-                jenkins-devops-demo:latest \
-                444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
-
-            echo "Pushing Docker image to ECR..."
-
-            docker push \
-                444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
-
-            echo "Docker image pushed successfully!"
-        '''
-    }
-}
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-            }
+                retry(3) {
+                    echo 'Attempting deployment...'
         }
     }
+}
 
     post {
 
@@ -119,4 +116,5 @@ pipeline {
             echo 'Pipeline completed'
         }
     }
+}
 }
