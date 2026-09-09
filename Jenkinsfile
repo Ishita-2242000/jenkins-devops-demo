@@ -111,6 +111,18 @@ pipeline {
                 '''
             }
         }
+        stage('Trivy Security Scan') {
+            steps {
+              sh '''
+                echo "Running Trivy security scan..."
+
+                trivy image \
+                    --severity HIGH,CRITICAL \
+                    --exit-code 1 \
+                    jenkins-devops-demo:latest
+                '''
+            }
+        }
 
         stage('Deploy') {
             steps {
