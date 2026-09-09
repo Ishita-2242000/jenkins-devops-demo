@@ -80,7 +80,24 @@ pipeline {
                 '''
             }
         }
+        stage('Push Image to ECR') {
+    steps {
+        sh '''
+            echo "Tagging Docker image..."
 
+            docker tag \
+                jenkins-devops-demo:latest \
+                444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
+
+            echo "Pushing Docker image to ECR..."
+
+            docker push \
+                444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
+
+            echo "Docker image pushed successfully!"
+        '''
+    }
+}
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
