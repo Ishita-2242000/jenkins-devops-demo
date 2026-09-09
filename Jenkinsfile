@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'linux'
+    }
 
     stages {
 
@@ -23,7 +25,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'echo Tests passed'
+                sh 'echo 'Tests passed successfully from GitHub!''
             }
         }
 
