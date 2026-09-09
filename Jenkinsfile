@@ -25,7 +25,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'echo 'Tests passed successfully from GitHub!''
+                sh 'echo "Tests passed successfully from GitHub!"'
             }
         }
 
