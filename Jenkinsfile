@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                    echo "Building application..."
+                    echo "Building application with progress..."
                     hostname
                     whoami
                     pwd
