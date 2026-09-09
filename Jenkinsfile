@@ -35,6 +35,17 @@ pipeline {
         }
     }
 }
+        stage('Docker Test') {
+            steps {
+              sh '''
+                echo "Docker version:"
+                docker --version
+
+                echo "Docker info:"
+                docker ps
+             '''
+    }
+}
 
         stage('Deploy') {
             steps {
