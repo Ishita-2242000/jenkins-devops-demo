@@ -96,9 +96,10 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                retry(3) {
-                    echo 'Attempting deployment...'
-        }
+                input message: 'Approve deployment to production?', 
+                ok: 'Deploy'
+
+            echo 'Production deployment approved!'
     }
 }
 
