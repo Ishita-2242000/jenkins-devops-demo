@@ -94,14 +94,33 @@ pipeline {
                 }
             }
         }
+
+        stage('Push Image to ECR') {
+            steps {
+                sh '''
+                    echo "Tagging Docker image..."
+
+                    docker tag \
+                        jenkins-devops-demo:latest \
+                        444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
+
+                    echo "Pushing Docker image to ECR..."
+
+                    docker push \
+                        444166849624.dkr.ecr.us-east-1.amazonaws.com/jenkins-devops-demo:latest
+                '''
+            }
+        }
+
         stage('Deploy') {
             steps {
-                input message: 'Approve deployment to production?', 
-                ok: 'Deploy'
+                input message: 'Approve deployment to production?',
+                      ok: 'Deploy'
 
-            echo 'Production deployment approved!'
+                echo 'Production deployment approved!'
+            }
+        }
     }
-}
 
     post {
 
@@ -117,6 +136,4 @@ pipeline {
             echo 'Pipeline completed'
         }
     }
-
-}
 }
