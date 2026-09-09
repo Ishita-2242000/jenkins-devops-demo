@@ -72,6 +72,18 @@ pipeline {
             }
         }
     }
+    stage('Docker Build') {
+    steps {
+        sh '''
+            echo "Building Docker image..."
+
+            docker build -t jenkins-devops-demo:latest .
+
+            echo "Docker image built successfully"
+            docker images
+        '''
+    }
+}
 
     post {
         success {
