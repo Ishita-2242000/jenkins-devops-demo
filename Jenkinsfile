@@ -1,4 +1,5 @@
 pipeline {
+
     agent {
         label 'linux'
     }
@@ -54,13 +55,27 @@ pipeline {
             }
         }
 
+        stage('Docker Build') {
+            steps {
+                sh '''
+                    echo "Building Docker image..."
+
+                    docker build -t jenkins-devops-demo:latest .
+
+                    echo "Docker image built successfully"
+
+                    docker images
+                '''
+            }
+        }
+
         stage('Docker Test') {
             steps {
                 sh '''
                     echo "Docker version:"
                     docker --version
 
-                    echo "Docker info:"
+                    echo "Docker containers:"
                     docker ps
                 '''
             }
@@ -72,20 +87,9 @@ pipeline {
             }
         }
     }
-    stage('Docker Build') {
-    steps {
-        sh '''
-            echo "Building Docker image..."
-
-            docker build -t jenkins-devops-demo:latest .
-
-            echo "Docker image built successfully"
-            docker images
-        '''
-    }
-}
 
     post {
+
         success {
             echo 'Pipeline successful'
         }
