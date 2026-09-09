@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                    echo "Building application with progress..."
+                    echo "Building application..."
                     hostname
                     whoami
                     pwd
@@ -26,47 +26,22 @@ pipeline {
             steps {
                 withCredentials([
                     [$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-devops-lab']
-        ]) {
-                sh '''
-                    echo "Testing AWS authentication..."
-                    aws sts get-caller-identity
-                '''
+                     credentialsId: 'aws-devops-lab']
+                ]) {
+                    sh '''
+                        echo "Testing AWS authentication..."
+                        aws sts get-caller-identity
+                    '''
+                }
+            }
         }
-    }
-}
-        stage('Docker Test') {
-            steps {
-              sh '''
-                echo "Docker version:"
-                docker --version
 
-                echo "Docker info:"
-                docker ps
-             '''
-    }
-}
-
-        stage('AWS Region') {
-             steps {
-                withCredentials([
-                  [$class: 'AmazonWebServicesCredentialsBinding',
-                   credentialsId: 'aws-devops-lab']
-        ]) 
-        {
-                sh '''
-                    aws configure get region || true
-                    aws sts get-caller-identity
-                '''
-        }
-    }
         stage('ECR Login') {
             steps {
-                 withCredentials([
+                withCredentials([
                     [$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-devops-lab']
-             ]) 
-            {
+                     credentialsId: 'aws-devops-lab']
+                ]) {
                     sh '''
                         echo "Logging in to Amazon ECR..."
 
@@ -74,11 +49,28 @@ pipeline {
                         docker login \
                         --username AWS \
                         --password-stdin 444166849624.dkr.ecr.us-east-1.amazonaws.com
-                '''
+                    '''
+                }
+            }
         }
-    }
-}
-}
+
+        stage('Docker Test') {
+            steps {
+                sh '''
+                    echo "Docker version:"
+                    docker --version
+
+                    echo "Docker info:"
+                    docker ps
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
+            }
+        }
     }
 
     post {
