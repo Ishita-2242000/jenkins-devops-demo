@@ -60,6 +60,24 @@ pipeline {
                 '''
         }
     }
+        stage('ECR Login') {
+            steps {
+                 withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-devops-lab']
+             ]) 
+            {
+                    sh '''
+                        echo "Logging in to Amazon ECR..."
+
+                        aws ecr get-login-password --region us-east-1 | \
+                        docker login \
+                        --username AWS \
+                        --password-stdin 444166849624.dkr.ecr.us-east-1.amazonaws.com
+                '''
+        }
+    }
+}
 }
     }
 
