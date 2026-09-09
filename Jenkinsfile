@@ -22,12 +22,19 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('AWS Authentication') {
             steps {
-                echo 'Running tests...'
-                sh 'echo "Tests passed successfully from GitHub!"'
-            }
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-devops-lab']
+        ]) {
+                sh '''
+                    echo "Testing AWS authentication..."
+                    aws sts get-caller-identity
+                '''
         }
+    }
+}
 
         stage('Deploy') {
             steps {
