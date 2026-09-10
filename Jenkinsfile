@@ -36,7 +36,20 @@ pipeline {
                 }
             }
         }
-
+        stage('Check EKS Access') {
+                steps {
+                    withCredentials([
+                        [$class: 'AmazonWebServicesCredentialsBinding',
+                          credentialsId: 'aws-devops-lab']
+        ]) 
+        {
+                    sh '''
+                        echo "Checking EKS clusters..."
+                        aws eks list-clusters --region us-east-1
+                    '''
+        }
+    }
+}
         stage('ECR Login') {
             steps {
                 withCredentials([
