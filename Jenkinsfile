@@ -68,7 +68,18 @@ pipeline {
                 '''
             }
         }
-
+        stage('SonarQube Code Quality') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                        sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=jenkins-devops-demo \
+                            -Dsonar.projectName=jenkins-devops-demo \
+                            -Dsonar.sources=.
+                        '''
+                }
+            }
+        }
         stage('Trivy Security Scan') {
             steps {
               sh '''
