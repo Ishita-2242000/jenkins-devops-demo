@@ -124,7 +124,7 @@ pipeline {
     post {
 
         success {
-            echo 'Pipeline successful'
+            echo 'Pipeline successfuuuuul'
         }
 
         failure {
